@@ -1,4 +1,3 @@
 # Google AdSense ads.txt
-# Ganti pub-XXXXXXXXXXXXXXXX dengan ID Penayang Google AdSense Anda
-# Format resmi: google.com, pub-XXXXXXXXXXXXXXXX, DIRECT, f08c47fec0942fa0
-google.com, pub-XXXXXXXXXXXXXXXX, DIRECT, f08c47fec0942fa0
+# ID Penayang Resmi: pub-5683117405667471
+google.com, pub-5683117405667471, DIRECT, f08c47fec0942fa0

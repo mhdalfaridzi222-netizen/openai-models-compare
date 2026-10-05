@@ -5,7 +5,7 @@ export const siteConfig = {
   url: "https://openai-models-compare.vercel.app",
   ogImage: "https://openai-models-compare.vercel.app/og.jpg",
   author: "OpenAI Models Compare Research Team",
-  adsenseId: process.env.NEXT_PUBLIC_ADSENSE_ID || "",
+  adsenseId: process.env.NEXT_PUBLIC_ADSENSE_ID || "ca-pub-5683117405667471",
   disclaimer: {
     independent: "OpenAI Models Compare adalah website informasi independen dan bukan website resmi OpenAI.",
     trademark: "Nama, logo, dan merek OpenAI merupakan milik pemiliknya masing-masing.",
