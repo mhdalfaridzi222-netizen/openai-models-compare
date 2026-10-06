@@ -44,7 +44,7 @@ export const metadata: Metadata = {
   creator: 'OpenAI Models Compare',
   publisher: 'OpenAI Models Compare',
   verification: {
-    google: process.env.NEXT_PUBLIC_GOOGLE_VERIFICATION || '',
+    google: 'x5ZiPqP8qsGvtb_14SzmBLk2BcfcrVoVSntfzVWalGM',
   },
   robots: {
     index: true,
@@ -80,9 +80,7 @@ export default function RootLayout({
   return (
     <html lang="id" className="scroll-smooth" suppressHydrationWarning>
       <head>
-        {process.env.NEXT_PUBLIC_GOOGLE_VERIFICATION && (
-          <meta name="google-site-verification" content={process.env.NEXT_PUBLIC_GOOGLE_VERIFICATION} />
-        )}
+        <meta name="google-site-verification" content="x5ZiPqP8qsGvtb_14SzmBLk2BcfcrVoVSntfzVWalGM" />
         <script
           async
           src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${process.env.NEXT_PUBLIC_ADSENSE_ID || siteConfig.adsenseId}`}
