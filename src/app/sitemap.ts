@@ -2,7 +2,7 @@ import { MetadataRoute } from 'next';
 import { getAllModels, getAllArticles, getCategories, getComparisons } from '@/lib/db';
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const baseUrl = 'https://openai-models-compare.vercel.app';
+  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://mhdalfaridzi.vercel.app';
 
   const [models, articles, categories, comparisons] = await Promise.all([
     getAllModels(),

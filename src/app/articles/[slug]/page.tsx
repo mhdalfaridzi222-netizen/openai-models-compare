@@ -77,7 +77,7 @@ export default async function ArticleDetailPage({ params }: Props) {
     publisher: {
       '@type': 'Organization',
       name: siteConfig.name,
-      url: 'https://openai-models-compare.vercel.app',
+      url: process.env.NEXT_PUBLIC_SITE_URL || 'https://mhdalfaridzi.vercel.app',
     },
   };
 

@@ -12,7 +12,7 @@ export const ARTICLES: Article[] = [
     updatedAt: '2025-02-15',
     seoTitle: 'Perbedaan Semua Model OpenAI: Panduan Terlengkap 2025/2026',
     seoDescription: 'Pelajari perbedaan mendasar model OpenAI, kegunaan, arsitektur, dan cara memilih model yang paling tepat sesuai kebutuhan aplikasi Anda.',
-    canonicalUrl: 'https://openai-models-compare.vercel.app/articles/perbedaan-semua-model-openai-panduan-lengkap',
+    canonicalUrl: 'https://mhdalfaridzi.vercel.app/articles/perbedaan-semua-model-openai-panduan-lengkap',
     content: `
 ## Pengantar: Memahami Ekosistem Model OpenAI
 
@@ -73,7 +73,7 @@ Tidak ada model "terbaik mutlak" untuk segala skenario. Kunci efisiensi AI moder
     updatedAt: '2025-02-16',
     seoTitle: 'GPT-6 Astra vs GPT-6.1 Sol vs GPT-6 Luna: Perbandingan Lengkap',
     seoDescription: 'Ulasan komparasi arsitektur frontier model generasi lanjutan OpenAI: perbedaan spesifikasi konteks, target beban kerja, dan peran dalam alur kerja agen otonom.',
-    canonicalUrl: 'https://openai-models-compare.vercel.app/articles/gpt-6-astra-vs-gpt-6-1-sol-vs-gpt-6-luna',
+    canonicalUrl: 'https://mhdalfaridzi.vercel.app/articles/gpt-6-astra-vs-gpt-6-1-sol-vs-gpt-6-luna',
     content: `
 ## Latar Belakang: Evolusi Menuju Generasi GPT-6
 
@@ -126,7 +126,7 @@ Luna menargetkan beban kerja perusahaan yang membutuhkan jutaan panggilan per ja
     updatedAt: '2025-02-18',
     seoTitle: 'Model OpenAI Terbaik untuk Coding & Software Engineering (2025)',
     seoDescription: 'Bandingkan model OpenAI terbaik untuk coding: o3-mini vs o1 vs GPT-4o. Temukan model yang paling akurat memecahkan bug nyata di repositori software.',
-    canonicalUrl: 'https://openai-models-compare.vercel.app/articles/model-openai-terbaik-untuk-coding',
+    canonicalUrl: 'https://mhdalfaridzi.vercel.app/articles/model-openai-terbaik-untuk-coding',
     content: `
 ## Mengapa Tolok Ukur Coding Berubah?
 
@@ -170,7 +170,7 @@ Untuk pembuatan boilerplate cepat, penulisan dokumentasi inline (JSDoc), atau fu
     updatedAt: '2025-02-17',
     seoTitle: 'Model OpenAI untuk Membuat Gambar: Panduan Lengkap DALL-E 3',
     seoDescription: 'Pelajari cara kerja, skema harga per gambar, format resolusi, dan teknik prompting presisi untuk DALL-E 3 di OpenAI API.',
-    canonicalUrl: 'https://openai-models-compare.vercel.app/articles/model-openai-untuk-membuat-gambar',
+    canonicalUrl: 'https://mhdalfaridzi.vercel.app/articles/model-openai-untuk-membuat-gambar',
     content: `
 ## Mengapa DALL·E 3 Berbeda?
 
@@ -211,7 +211,7 @@ Biaya generasi gambar DALL-E 3 dihitung per gambar yang dihasilkan, bukan per to
     updatedAt: '2025-02-18',
     seoTitle: 'Model OpenAI untuk Audio dan Realtime: Panduan Whisper & GPT-4o Voice',
     seoDescription: 'Pelajari perbedaan transkripsi Whisper, sintesis TTS, dan latensi interaksi percakapan suara langsung pada GPT-4o Realtime API.',
-    canonicalUrl: 'https://openai-models-compare.vercel.app/articles/model-openai-untuk-audio-dan-realtime',
+    canonicalUrl: 'https://mhdalfaridzi.vercel.app/articles/model-openai-untuk-audio-dan-realtime',
     content: `
 ## Arsitektur Tradisional vs Speech-to-Speech Asli
 
@@ -254,7 +254,7 @@ Dengan **GPT-4o Realtime**, OpenAI memproses audio langsung ke audio secara terp
     updatedAt: '2025-02-19',
     seoTitle: 'Apa Itu Context Window pada Model AI? Penjelasan Lengkap & Contoh',
     seoDescription: 'Pahami apa itu context window, perbedaannya dengan output tokens, dan bagaimana memilih model dengan kapasitas konteks yang pas.',
-    canonicalUrl: 'https://openai-models-compare.vercel.app/articles/apa-itu-context-window-pada-model-ai',
+    canonicalUrl: 'https://mhdalfaridzi.vercel.app/articles/apa-itu-context-window-pada-model-ai',
     content: `
 ## Definisi Sederhana: Memori Kerja AI
 
@@ -295,7 +295,7 @@ Banyak pemula salah mengira bahwa jika sebuah model memiliki context window 128.
     updatedAt: '2025-02-19',
     seoTitle: 'Perbedaan Model Active, Preview, Deprecated, dan Retired di OpenAI',
     seoDescription: 'Pelajari siklus hidup model OpenAI API dari fase Preview, Active produksi, Deprecated, hingga penonaktifan total (Retired).',
-    canonicalUrl: 'https://openai-models-compare.vercel.app/articles/perbedaan-model-active-preview-deprecated-retired',
+    canonicalUrl: 'https://mhdalfaridzi.vercel.app/articles/perbedaan-model-active-preview-deprecated-retired',
     content: `
 ## Mengapa Memahami Status Model Sangat Penting?
 
@@ -341,7 +341,7 @@ Untuk itu, OpenAI menetapkan empat status siklus hidup resmi (*model lifecycle s
     updatedAt: '2025-02-19',
     seoTitle: 'GPT vs Reasoning Model: Apa Bedanya dan Kapan Harus Digunakan?',
     seoDescription: 'Bandingkan arsitektur GPT konvensional dan model penalaran o-series. Pahami kapan harus memakai GPT-4o dan kapan wajib menggunakan o3-mini.',
-    canonicalUrl: 'https://openai-models-compare.vercel.app/articles/gpt-vs-reasoning-model-apa-bedanya',
+    canonicalUrl: 'https://mhdalfaridzi.vercel.app/articles/gpt-vs-reasoning-model-apa-bedanya',
     content: `
 ## Paradigma Baru: Dari "Fast Thinking" ke "Deep Thinking"
 
@@ -383,7 +383,7 @@ Namun, untuk masalah logika yang sangat rumit—seperti mencari celah keamanan k
     updatedAt: '2025-02-22',
     seoTitle: 'Cara Memilih Model OpenAI Sesuai Kebutuhan Aplikasi & Bisnis Anda',
     seoDescription: 'Panduan praktis memilih model OpenAI terbaik: perbandingan kebutuhan chatbot, coding o3-mini, analisis dokumen GPT-4o, dan efisiensi biaya API.',
-    canonicalUrl: 'https://openai-models-compare.vercel.app/articles/cara-memilih-model-openai-sesuai-kebutuhan',
+    canonicalUrl: 'https://mhdalfaridzi.vercel.app/articles/cara-memilih-model-openai-sesuai-kebutuhan',
     content: `
 ## Mengapa Pemilihan Model yang Tepat Sangat Krusial?
 
@@ -431,7 +431,7 @@ Dengan berkembangnya katalog model OpenAI dari seri GPT-4o, keluarga penalaran o
     updatedAt: '2025-02-23',
     seoTitle: 'Cara Menghitung Biaya OpenAI API: Panduan Lengkap dan Kalkulator Token',
     seoDescription: 'Pelajari rumus baku perhitungan tarif token OpenAI, diskon prompt caching, Batch API, dan simulasi biaya per bulan menggunakan kalkulator resmi.',
-    canonicalUrl: 'https://openai-models-compare.vercel.app/articles/cara-menghitung-biaya-openai-api-panduan-kalkulator',
+    canonicalUrl: 'https://mhdalfaridzi.vercel.app/articles/cara-menghitung-biaya-openai-api-panduan-kalkulator',
     content: `
 ## Rumus Baku Perhitungan Biaya OpenAI API
 

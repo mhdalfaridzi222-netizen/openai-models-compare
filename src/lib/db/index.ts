@@ -57,7 +57,7 @@ let memorySyncLogs: SyncLogEntity[] = [
 let memoryAuditLogs: AuditLogEntity[] = [
   {
     id: 'audit-seed-1',
-    adminEmail: 'system@openai-models-compare.vercel.app',
+    adminEmail: 'system@mhdalfaridzi.vercel.app',
     action: 'SYSTEM_INIT',
     entity: 'system',
     entityId: 'v2-upgrade',
@@ -78,8 +78,8 @@ let memorySiteSettings: SiteSettingsEntity = {
 let memorySeoSettings: SeoSettingsEntity = {
   defaultTitle: 'OpenAI Models Compare — Bandingkan Semua Model OpenAI dengan Mudah.',
   defaultDescription: 'Ensiklopedia & portal komparasi independen terlengkap untuk semua model OpenAI: spesifikasi, kemampuan visi, coding, reasoning, context window, tolok ukur, dan kalkulator biaya API.',
-  defaultOgImage: 'https://openai-models-compare.vercel.app/og.jpg',
-  canonicalBase: 'https://openai-models-compare.vercel.app',
+  defaultOgImage: 'https://mhdalfaridzi.vercel.app/og.jpg',
+  canonicalBase: 'https://mhdalfaridzi.vercel.app',
   googleAnalyticsId: process.env.NEXT_PUBLIC_GA_ID || undefined
 };
 
@@ -357,7 +357,7 @@ export async function getAllArticles(options?: {
           updatedAt: row.updated_at ? new Date(row.updated_at).toISOString().split('T')[0] : '2026-10-06',
           seoTitle: row.seo_title,
           seoDescription: row.seo_description,
-          canonicalUrl: row.canonical_url || `https://openai-models-compare.vercel.app/articles/${row.slug}`,
+          canonicalUrl: row.canonical_url || `https://mhdalfaridzi.vercel.app/articles/${row.slug}`,
           status: row.status,
           relatedModelIds: row.related_model_ids
         }));
@@ -417,7 +417,7 @@ export async function saveOrUpdateArticle(article: Partial<Article>, adminEmail:
       updatedAt: dateStr,
       seoTitle: article.seoTitle || article.title || 'Panduan OpenAI',
       seoDescription: article.seoDescription || article.excerpt || '',
-      canonicalUrl: article.canonicalUrl || `https://openai-models-compare.vercel.app/articles/${article.slug}`,
+      canonicalUrl: article.canonicalUrl || `https://mhdalfaridzi.vercel.app/articles/${article.slug}`,
       status: article.status || 'PUBLISHED',
       relatedModelIds: article.relatedModelIds || []
     };

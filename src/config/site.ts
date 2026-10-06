@@ -2,8 +2,8 @@ export const siteConfig = {
   name: "OpenAI Models Compare",
   tagline: "Bandingkan Semua Model OpenAI dengan Mudah.",
   description: "Ensiklopedia & portal komparasi independen terlengkap untuk semua model OpenAI: spesifikasi, kemampuan visi, coding, reasoning, context window, tolok ukur, dan kalkulator biaya API.",
-  url: "https://openai-models-compare.vercel.app",
-  ogImage: "https://openai-models-compare.vercel.app/og.jpg",
+  url: process.env.NEXT_PUBLIC_SITE_URL || "https://mhdalfaridzi.vercel.app",
+  ogImage: "https://mhdalfaridzi.vercel.app/og.jpg",
   author: "OpenAI Models Compare Research Team",
   adsenseId: process.env.NEXT_PUBLIC_ADSENSE_ID || "ca-pub-5683117405667471",
   disclaimer: {
