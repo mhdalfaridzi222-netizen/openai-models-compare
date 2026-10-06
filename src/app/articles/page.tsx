@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
-import { ARTICLES } from '@/data/articles';
+import { getAllArticles } from '@/lib/db';
 import AdBanner from '@/components/AdBanner';
 import { BookOpen, Calendar, ArrowRight, User } from 'lucide-react';
 
@@ -9,10 +9,11 @@ export const metadata: Metadata = {
   description: 'Koleksi artikel teknis dan perbandingan model OpenAI: benchmark coding, reasoning o-series, sintesis gambar DALL-E, dan arsitektur token.',
 };
 
-export default function ArticlesIndexPage() {
+export default async function ArticlesIndexPage() {
+  const articles = await getAllArticles();
+
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-16 space-y-10">
-      
       {/* Header */}
       <div className="text-center max-w-2xl mx-auto space-y-3">
         <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 text-xs font-bold border border-emerald-500/20">
@@ -23,7 +24,7 @@ export default function ArticlesIndexPage() {
           Wawasan & Panduan Model OpenAI
         </h1>
         <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-300 leading-relaxed">
-          Kumpulan analisis mendalam yang ditulis secara objektif dan mudah dipahami untuk membantu Anda memilih dan mengoptimalkan implementasi model AI.
+          Kumpulan analisis mendalam yang ditulis secara objektif dan mudah dipahami untuk membantu Anda memilih dan mengoptimalkan implementasi model AI ({articles.length} artikel terbit).
         </p>
       </div>
 
@@ -31,7 +32,7 @@ export default function ArticlesIndexPage() {
 
       {/* Articles Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {ARTICLES.map((art) => (
+        {articles.map((art) => (
           <Link
             key={art.slug}
             href={`/articles/${art.slug}`}
@@ -63,7 +64,6 @@ export default function ArticlesIndexPage() {
       </div>
 
       <AdBanner slot="bottom" />
-
     </div>
   );
 }

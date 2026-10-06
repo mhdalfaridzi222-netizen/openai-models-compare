@@ -1,10 +1,10 @@
 import { Suspense } from 'react';
 import type { Metadata } from 'next';
-import { getAllModels } from '@/data/models';
+import { getAllModels } from '@/lib/db';
 import { COMPARISON_PRESETS } from '@/data/comparisons';
 import ComparisonView from '@/components/ComparisonView';
 import AdBanner from '@/components/AdBanner';
-import { Scale, Sparkles } from 'lucide-react';
+import { Scale } from 'lucide-react';
 import Link from 'next/link';
 
 export const metadata: Metadata = {
@@ -18,11 +18,10 @@ interface Props {
 
 export default async function ComparePage({ searchParams }: Props) {
   const { a = 'gpt-4o', b = 'o3-mini', c = 'gpt-4o-mini' } = await searchParams;
-  const allModels = getAllModels();
+  const allModels = await getAllModels();
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-16 space-y-10">
-      
       {/* Header */}
       <div className="text-center max-w-3xl mx-auto space-y-3">
         <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 text-xs font-bold border border-emerald-500/20">
@@ -46,7 +45,7 @@ export default async function ComparePage({ searchParams }: Props) {
           {COMPARISON_PRESETS.map((preset) => (
             <Link
               key={preset.id}
-              href={`/compare?a=${preset.modelIds[0]}&b=${preset.modelIds[1]}${preset.modelIds[2] ? `&c=${preset.modelIds[2]}` : ''}`}
+              href={`/compare/${preset.slug}`}
               className="px-3 py-1.5 rounded-xl bg-white dark:bg-[#161f30] hover:border-emerald-500 border border-slate-200 dark:border-slate-700 text-xs font-semibold text-slate-700 dark:text-slate-200 transition-colors shadow-sm"
             >
               {preset.title}
@@ -70,7 +69,6 @@ export default async function ComparePage({ searchParams }: Props) {
 
       {/* Bottom Advertisement */}
       <AdBanner slot="bottom" />
-
     </div>
   );
 }

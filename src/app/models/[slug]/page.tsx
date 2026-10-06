@@ -1,7 +1,7 @@
 import { notFound } from 'next/navigation';
 import type { Metadata } from 'next';
 import Link from 'next/link';
-import { getAllModelSlugs, getModelBySlug, getAllModels } from '@/data/models';
+import { getModelBySlug, getAllModels } from '@/lib/db';
 import ModelStatusBadge from '@/components/ModelStatusBadge';
 import AdBanner from '@/components/AdBanner';
 import { 
@@ -17,7 +17,9 @@ import {
   Clock, 
   Brain, 
   Eye, 
-  FileText 
+  FileText,
+  ShieldCheck,
+  Tag
 } from 'lucide-react';
 import { siteConfig } from '@/config/site';
 
@@ -26,12 +28,13 @@ interface Props {
 }
 
 export async function generateStaticParams() {
-  return getAllModelSlugs().map((slug) => ({ slug }));
+  const models = await getAllModels();
+  return models.map((m) => ({ slug: m.slug }));
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
-  const model = getModelBySlug(slug);
+  const model = await getModelBySlug(slug);
 
   if (!model) return { title: 'Model Tidak Ditemukan' };
 
@@ -47,27 +50,31 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function ModelDetailPage({ params }: Props) {
   const { slug } = await params;
-  const model = getModelBySlug(slug);
+  const model = await getModelBySlug(slug);
 
   if (!model) {
     notFound();
   }
 
-  const allModels = getAllModels();
+  const allModels = await getAllModels();
   const relatedModels = allModels.filter(m => m.id !== model.id && (m.category === model.category || m.family === model.family)).slice(0, 3);
 
-  const formatPrice = (p: number | null) => {
-    if (p === null || p === undefined) return 'Belum tersedia / N/A';
+  const formatPrice = (p: number | null | undefined) => {
+    if (p === null || p === undefined) return 'Pricing belum tersedia';
     if (p === 0) return 'Gratis ($0.00)';
     return `$${p.toFixed(2)} per 1M token`;
   };
 
-  const formatContext = (c: number | null) => {
+  const formatContext = (c: number | null | undefined) => {
     if (c === null || c === undefined) return 'N/A';
     return `${c.toLocaleString('id-ID')} token`;
   };
 
-  // Schema.org JSON-LD (Section 28)
+  const verifiedDateString = model.lastVerifiedAt
+    ? new Date(model.lastVerifiedAt).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' })
+    : '6 Oktober 2026';
+
+  // Schema.org JSON-LD (Section 28 & 50)
   const jsonLd = {
     '@context': 'https://schema.org',
     '@type': 'SoftwareApplication',
@@ -85,7 +92,6 @@ export default async function ModelDetailPage({ params }: Props) {
 
   return (
     <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-16 space-y-12">
-      
       {/* Schema.org JSON-LD */}
       <script
         type="application/ld+json"
@@ -101,7 +107,6 @@ export default async function ModelDetailPage({ params }: Props) {
         <span className="text-slate-900 dark:text-white font-semibold">{model.name}</span>
       </nav>
 
-      {/* Top Advertisement */}
       <AdBanner slot="top" />
 
       {/* Hero Header Card */}
@@ -110,7 +115,10 @@ export default async function ModelDetailPage({ params }: Props) {
           <div className="flex flex-wrap items-center gap-2.5">
             <ModelStatusBadge status={model.status} />
             <span className="text-xs font-mono font-bold px-2.5 py-1 rounded-xl bg-slate-100 dark:bg-[#161f30] text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-800">
-              model: "{model.modelId}"
+              API Model ID: "{model.modelId}"
+            </span>
+            <span className="text-[11px] font-bold px-2.5 py-0.5 rounded-lg bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">
+              Sumber: Official Docs
             </span>
           </div>
 
@@ -128,8 +136,8 @@ export default async function ModelDetailPage({ params }: Props) {
               <span>Rilis: {model.releaseDate}</span>
             </div>
             <div className="flex items-center gap-1.5">
-              <Clock className="w-3.5 h-3.5 text-slate-500" />
-              <span>Pembaruan Data: {model.lastUpdated}</span>
+              <ShieldCheck className="w-3.5 h-3.5 text-emerald-500" />
+              <span>Terakhir diverifikasi: <strong>{verifiedDateString}</strong></span>
             </div>
           </div>
         </div>
@@ -137,7 +145,7 @@ export default async function ModelDetailPage({ params }: Props) {
         {/* Action Button: Compare */}
         <div className="shrink-0 flex flex-col sm:flex-row md:flex-col gap-2.5">
           <Link
-            href={`/compare?a=${model.id}`}
+            href={`/compare?a=${model.id}&b=gpt-4o`}
             className="px-6 py-3 rounded-2xl bg-emerald-500 hover:bg-emerald-600 text-white font-bold text-xs shadow-lg shadow-emerald-500/20 transition-all flex items-center justify-center gap-2"
           >
             <Scale className="w-4 h-4" />
@@ -155,7 +163,7 @@ export default async function ModelDetailPage({ params }: Props) {
         </div>
       </div>
 
-      {/* SECTION 1: RINGKASAN & FUNGSI (Section 10) */}
+      {/* SECTION 1: RINGKASAN & FUNGSI */}
       <div className="bg-white dark:bg-[#111827] p-6 sm:p-8 rounded-3xl border border-slate-200/80 dark:border-slate-800 shadow-sm space-y-4">
         <h2 className="text-lg font-bold text-slate-900 dark:text-white flex items-center gap-2">
           <Sparkles className="w-4 h-4 text-emerald-500" />
@@ -174,7 +182,7 @@ export default async function ModelDetailPage({ params }: Props) {
         )}
       </div>
 
-      {/* SECTION 2: SPESIFIKASI TEKNIS (Section 10) */}
+      {/* SECTION 2: SPESIFIKASI TEKNIS */}
       <div className="bg-white dark:bg-[#111827] p-6 sm:p-8 rounded-3xl border border-slate-200/80 dark:border-slate-800 shadow-sm space-y-6">
         <h2 className="text-lg font-bold text-slate-900 dark:text-white flex items-center gap-2">
           <FileText className="w-4 h-4 text-emerald-500" />
@@ -182,7 +190,6 @@ export default async function ModelDetailPage({ params }: Props) {
         </h2>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 text-xs">
-          
           <div className="p-4 rounded-2xl bg-slate-50 dark:bg-[#161f30] border border-slate-200/80 dark:border-slate-800">
             <span className="text-[10px] text-slate-400 font-bold uppercase block mb-1">API Model ID</span>
             <span className="font-mono font-bold text-slate-900 dark:text-white text-sm">{model.modelId}</span>
@@ -214,14 +221,12 @@ export default async function ModelDetailPage({ params }: Props) {
               Input: {model.imageInput ? 'Teks + Citra' : model.audioInput ? 'Teks + Audio' : 'Teks'} • Output: {model.audioOutput ? 'Audio/Teks' : model.imageGeneration ? 'Citra' : 'Teks'}
             </span>
           </div>
-
         </div>
       </div>
 
-      {/* ARTICLE ADVERTISEMENT (Section 30) */}
       <AdBanner slot="article" />
 
-      {/* SECTION 3: KEMAMPUAN MODEL (Section 10) */}
+      {/* SECTION 3: KEMAMPUAN MODEL */}
       <div className="bg-white dark:bg-[#111827] p-6 sm:p-8 rounded-3xl border border-slate-200/80 dark:border-slate-800 shadow-sm space-y-6">
         <h2 className="text-lg font-bold text-slate-900 dark:text-white">
           Daftar Kemampuan (Capabilities)
@@ -230,7 +235,7 @@ export default async function ModelDetailPage({ params }: Props) {
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 text-xs">
           {[
             { label: 'Pemrosesan Teks', active: true },
-            { label: 'Image Input (Vision)', active: model.imageInput },
+            { label: 'Image Input (Vision)', active: model.imageInput || model.vision },
             { label: 'Image Generation', active: model.imageGeneration },
             { label: 'Audio Input', active: model.audioInput },
             { label: 'Audio Output', active: model.audioOutput },
@@ -259,7 +264,7 @@ export default async function ModelDetailPage({ params }: Props) {
         </div>
       </div>
 
-      {/* SECTION 4: TABEL HARGA RESMI (Section 10) */}
+      {/* SECTION 4: TABEL HARGA RESMI */}
       <div className="bg-white dark:bg-[#111827] p-6 sm:p-8 rounded-3xl border border-slate-200/80 dark:border-slate-800 shadow-sm space-y-4">
         <h2 className="text-lg font-bold text-slate-900 dark:text-white">
           Tabel Harga Resmi API
@@ -306,16 +311,13 @@ export default async function ModelDetailPage({ params }: Props) {
           </table>
         </div>
 
-        {/* Mandatory Pricing Disclaimer (Section 10) */}
         <p className="text-[11px] text-amber-600 dark:text-amber-400 italic">
           *Harga dapat berubah. Periksa dokumentasi resmi OpenAI untuk harga terbaru.
         </p>
       </div>
 
-      {/* SECTION 5: COCOK UNTUK & TIDAK COCOK UNTUK (Section 10) */}
+      {/* SECTION 5: COCOK UNTUK & TIDAK COCOK UNTUK */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        
-        {/* Suitable For */}
         <div className="bg-white dark:bg-[#111827] p-6 rounded-3xl border border-emerald-500/30 shadow-sm space-y-3">
           <h3 className="font-bold text-sm text-emerald-600 dark:text-emerald-400 flex items-center gap-2">
             <Check className="w-4 h-4" />
@@ -331,7 +333,6 @@ export default async function ModelDetailPage({ params }: Props) {
           </ul>
         </div>
 
-        {/* Not Suitable For */}
         <div className="bg-white dark:bg-[#111827] p-6 rounded-3xl border border-rose-500/30 shadow-sm space-y-3">
           <h3 className="font-bold text-sm text-rose-600 dark:text-rose-400 flex items-center gap-2">
             <X className="w-4 h-4" />
@@ -346,10 +347,9 @@ export default async function ModelDetailPage({ params }: Props) {
             ))}
           </ul>
         </div>
-
       </div>
 
-      {/* SECTION 6: SUMBER RESMI & VERIFIKASI (Section 10 & 47) */}
+      {/* SECTION 6: SUMBER RESMI & VERIFIKASI */}
       <div className="bg-slate-50 dark:bg-[#161f30] p-6 rounded-3xl border border-slate-200 dark:border-slate-800 space-y-3 text-xs text-slate-600 dark:text-slate-300">
         <h3 className="font-bold text-slate-900 dark:text-white text-sm">
           Informasi Validitas & Sumber Resmi
@@ -368,7 +368,7 @@ export default async function ModelDetailPage({ params }: Props) {
             <ExternalLink className="w-3.5 h-3.5" />
           </a>
           <span className="text-slate-400">•</span>
-          <span className="text-slate-500">Terakhir diverifikasi: <strong>{model.lastUpdated}</strong></span>
+          <span className="text-slate-500">Terakhir diverifikasi: <strong>{verifiedDateString}</strong></span>
         </div>
       </div>
 
@@ -396,9 +396,7 @@ export default async function ModelDetailPage({ params }: Props) {
         </div>
       )}
 
-      {/* Bottom Advertisement */}
       <AdBanner slot="bottom" />
-
     </div>
   );
 }

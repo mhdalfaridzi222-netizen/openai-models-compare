@@ -1,14 +1,22 @@
 import { MetadataRoute } from 'next';
-import { getAllModelSlugs } from '@/data/models';
-import { ARTICLES } from '@/data/articles';
+import { getAllModels, getAllArticles, getCategories, getComparisons } from '@/lib/db';
 
-export default function sitemap(): MetadataRoute.Sitemap {
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const baseUrl = 'https://openai-models-compare.vercel.app';
+
+  const [models, articles, categories, comparisons] = await Promise.all([
+    getAllModels(),
+    getAllArticles(),
+    getCategories(),
+    getComparisons()
+  ]);
 
   const staticRoutes = [
     '',
     '/models',
+    '/find-model',
     '/compare',
+    '/categories',
     '/calculator',
     '/models/deprecated',
     '/history',
@@ -18,7 +26,9 @@ export default function sitemap(): MetadataRoute.Sitemap {
     '/guides/api-vs-chatgpt',
     '/articles',
     '/about',
+    '/disclaimer',
     '/privacy',
+    '/privacy-policy',
     '/contact',
   ].map((route) => ({
     url: `${baseUrl}${route}`,
@@ -27,19 +37,39 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: route === '' ? 1.0 : 0.8,
   }));
 
-  const modelRoutes = getAllModelSlugs().map((slug) => ({
-    url: `${baseUrl}/models/${slug}`,
-    lastModified: new Date(),
+  const modelRoutes = models.map((m) => ({
+    url: `${baseUrl}/models/${m.slug}`,
+    lastModified: new Date(m.lastVerifiedAt || '2026-10-06'),
     changeFrequency: 'weekly' as const,
     priority: 0.9,
   }));
 
-  const articleRoutes = ARTICLES.map((article) => ({
+  const categoryRoutes = categories.map((c) => ({
+    url: `${baseUrl}/categories/${c.slug}`,
+    lastModified: new Date(),
+    changeFrequency: 'weekly' as const,
+    priority: 0.8,
+  }));
+
+  const comparisonRoutes = comparisons.map((comp) => ({
+    url: `${baseUrl}/compare/${comp.slug}`,
+    lastModified: new Date(),
+    changeFrequency: 'weekly' as const,
+    priority: 0.8,
+  }));
+
+  const articleRoutes = articles.map((article) => ({
     url: `${baseUrl}/articles/${article.slug}`,
     lastModified: new Date(article.updatedAt),
     changeFrequency: 'monthly' as const,
     priority: 0.7,
   }));
 
-  return [...staticRoutes, ...modelRoutes, ...articleRoutes];
+  return [
+    ...staticRoutes,
+    ...modelRoutes,
+    ...categoryRoutes,
+    ...comparisonRoutes,
+    ...articleRoutes
+  ];
 }

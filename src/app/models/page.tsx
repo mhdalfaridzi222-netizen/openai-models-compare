@@ -1,6 +1,6 @@
 import { Suspense } from 'react';
 import type { Metadata } from 'next';
-import { getAllModels } from '@/data/models';
+import { getAllModels } from '@/lib/db';
 import ModelsFilterView from '@/components/ModelsFilterView';
 import AdBanner from '@/components/AdBanner';
 
@@ -9,12 +9,11 @@ export const metadata: Metadata = {
   description: 'Cari, filter, dan bandingkan seluruh model OpenAI: Flagship, Reasoning (o-series), Coding, Vision, Image (DALL-E), Audio (Whisper/TTS), dan Embeddings.',
 };
 
-export default function ModelsPage() {
-  const allModels = getAllModels();
+export default async function ModelsPage() {
+  const allModels = await getAllModels();
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-16 space-y-10">
-      
       {/* Page Header */}
       <div className="text-center max-w-3xl mx-auto space-y-3">
         <span className="text-xs uppercase tracking-wider text-emerald-500 font-bold block">
@@ -38,7 +37,6 @@ export default function ModelsPage() {
 
       {/* Bottom Advertisement */}
       <AdBanner slot="bottom" />
-
     </div>
   );
 }

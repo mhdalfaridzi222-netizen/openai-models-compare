@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import { getAllModels } from '@/data/models';
+import { getAllModels } from '@/lib/db';
 import TokenCalculator from '@/components/TokenCalculator';
 import AdBanner from '@/components/AdBanner';
 import { Calculator, Info, CheckCircle2 } from 'lucide-react';
@@ -10,12 +10,11 @@ export const metadata: Metadata = {
   description: 'Simulasikan estimasi biaya bulanan API OpenAI dengan kalkulator interaktif: input token, output token, prompt caching, dan batch API discount.',
 };
 
-export default function CalculatorPage() {
-  const allModels = getAllModels();
+export default async function CalculatorPage() {
+  const allModels = await getAllModels();
 
   return (
     <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-16 space-y-10">
-      
       {/* Header */}
       <div className="text-center max-w-3xl mx-auto space-y-3">
         <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 text-xs font-bold border border-emerald-500/20">
@@ -43,7 +42,6 @@ export default function CalculatorPage() {
         </h2>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-xs text-slate-600 dark:text-slate-300">
-          
           <div className="p-5 rounded-2xl bg-slate-50 dark:bg-[#161f30] border border-slate-200 dark:border-slate-800 space-y-2">
             <h3 className="font-bold text-slate-900 dark:text-white text-sm flex items-center gap-2">
               <span className="w-2 h-2 rounded-full bg-emerald-500" />
@@ -73,7 +71,6 @@ export default function CalculatorPage() {
               Pada model penalaran seperti o1 dan o3-mini, proses internal thinking juga dihitung sebagai token output dan ditagih sesuai tarif output token model bersangkutan.
             </p>
           </div>
-
         </div>
 
         <div className="pt-4 border-t border-slate-100 dark:border-slate-800 flex justify-between items-center text-xs">
@@ -86,7 +83,6 @@ export default function CalculatorPage() {
 
       {/* Bottom Advertisement */}
       <AdBanner slot="bottom" />
-
     </div>
   );
 }

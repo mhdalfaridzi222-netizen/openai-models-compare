@@ -1,8 +1,5 @@
 import Link from 'next/link';
-import { getAllModels } from '@/data/models';
-import { CATEGORIES } from '@/data/categories';
-import { ARTICLES } from '@/data/articles';
-import { GENERAL_FAQS } from '@/data/comparisons';
+import { getAllModels, getAllArticles, getCategories, getFaqs } from '@/lib/db';
 import ModelCard from '@/components/ModelCard';
 import ModelSelector from '@/components/ModelSelector';
 import ComparisonView from '@/components/ComparisonView';
@@ -13,29 +10,30 @@ import {
   Search, 
   ArrowRight, 
   Scale, 
-  ShieldCheck, 
   CheckCircle2, 
   HelpCircle, 
-  BookOpen, 
-  History,
-  Compass
+  Compass,
+  Cpu
 } from 'lucide-react';
 
-export default function HomePage() {
-  const allModels = getAllModels();
+export default async function HomePage() {
+  const [allModels, allArticles, categories, faqs] = await Promise.all([
+    getAllModels(),
+    getAllArticles(),
+    getCategories(),
+    getFaqs()
+  ]);
   
-  // Featured active models (Section 9)
+  // Featured active models
   const featuredModels = allModels.filter(m => 
     ['gpt-4o', 'o3-mini', 'gpt-4o-mini', 'o1', 'dall-e-3', 'whisper-1'].includes(m.id)
   );
 
   return (
     <div className="space-y-16 sm:space-y-24 pb-20">
-      
-      {/* 1. HERO SECTION (Section 7) */}
+      {/* 1. HERO SECTION */}
       <section className="relative pt-12 sm:pt-20 lg:pt-24 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto text-center">
-        
-        {/* Subtle Background Glow */}
+        {/* Background Glow */}
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-80 sm:w-[500px] h-80 sm:h-[500px] bg-emerald-500/10 dark:bg-emerald-500/10 rounded-full blur-3xl pointer-events-none -z-10" />
 
         <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 text-xs font-bold mb-6 border border-emerald-500/20">
@@ -43,17 +41,15 @@ export default function HomePage() {
           <span>Basis Data Resmi OpenAI Developers 2025/2026</span>
         </div>
 
-        {/* Section 7 Headline */}
         <h1 className="text-3xl sm:text-5xl lg:text-6xl font-extrabold text-slate-900 dark:text-white tracking-tight max-w-4xl mx-auto leading-tight">
           Bandingkan Semua Model OpenAI
         </h1>
 
-        {/* Section 7 Subheadline */}
         <p className="text-sm sm:text-base lg:text-lg text-slate-600 dark:text-slate-300 max-w-3xl mx-auto mt-4 sm:mt-6 leading-relaxed font-normal">
           Temukan perbedaan model OpenAI berdasarkan kemampuan, harga, kecepatan, context window, reasoning, coding, image, audio, dan kebutuhan penggunaan.
         </p>
 
-        {/* Section 7 Search Box */}
+        {/* Search Box */}
         <div className="mt-8 max-w-xl mx-auto">
           <form action="/models" method="GET" className="relative group">
             <Search className="w-5 h-5 absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-emerald-500 transition-colors" />
@@ -70,6 +66,23 @@ export default function HomePage() {
               Cari Model
             </button>
           </form>
+        </div>
+
+        {/* Action Pills */}
+        <div className="mt-6 flex flex-wrap items-center justify-center gap-3 text-xs">
+          <Link
+            href="/find-model"
+            className="inline-flex items-center gap-2 px-4 py-2 rounded-2xl bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 font-bold border border-emerald-500/30 hover:bg-emerald-500 hover:text-white transition-all shadow-sm"
+          >
+            <Compass className="w-4 h-4" />
+            <span>Gunakan Model Finder Deterministik &rarr;</span>
+          </Link>
+          <Link
+            href="/calculator"
+            className="inline-flex items-center gap-2 px-4 py-2 rounded-2xl bg-slate-100 dark:bg-[#161f30] text-slate-700 dark:text-slate-200 font-bold border border-slate-200 dark:border-slate-700 hover:border-emerald-500 transition-all"
+          >
+            <span>Kalkulator Token Biaya API</span>
+          </Link>
         </div>
 
         {/* Quick Stats Banner */}
@@ -91,15 +104,14 @@ export default function HomePage() {
             <span className="text-xs font-semibold text-slate-700 dark:text-slate-300">Kalkulator Token Terintegrasi</span>
           </div>
         </div>
-
       </section>
 
-      {/* TOP ADVERTISEMENT (Section 30) */}
+      {/* TOP ADVERTISEMENT */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <AdBanner slot="top" />
       </div>
 
-      {/* 2. QUICK CATEGORY (Section 8) */}
+      {/* 2. QUICK CATEGORY */}
       <section id="categories" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center max-w-2xl mx-auto mb-8">
           <span className="text-xs uppercase tracking-wider text-emerald-500 font-bold block mb-1">
@@ -114,7 +126,7 @@ export default function HomePage() {
         </div>
 
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3.5 sm:gap-4">
-          {CATEGORIES.map((cat) => (
+          {categories.map((cat) => (
             <Link
               key={cat.id}
               href={`/models?category=${cat.id}`}
@@ -134,7 +146,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* 3. FEATURED MODELS (Section 9) */}
+      {/* 3. FEATURED MODELS */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-8">
           <div>
@@ -163,17 +175,17 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* BETWEEN CONTENT ADVERTISEMENT (Section 30) */}
+      {/* BETWEEN CONTENT ADVERTISEMENT */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <AdBanner slot="between-content" />
       </div>
 
-      {/* 4. INTERACTIVE MODEL SELECTOR (Section 14) */}
+      {/* 4. INTERACTIVE MODEL SELECTOR */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <ModelSelector models={allModels} />
       </section>
 
-      {/* 5. INTERACTIVE HEAD-TO-HEAD COMPARISON (Section 11-13) */}
+      {/* 5. INTERACTIVE HEAD-TO-HEAD COMPARISON */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center max-w-3xl mx-auto mb-8">
           <span className="text-xs uppercase tracking-wider text-emerald-500 font-bold block mb-1">
@@ -190,12 +202,12 @@ export default function HomePage() {
         <ComparisonView allModels={allModels} />
       </section>
 
-      {/* 6. TOKEN COST CALCULATOR (Section 22) */}
+      {/* 6. TOKEN COST CALCULATOR */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <TokenCalculator models={allModels} />
       </section>
 
-      {/* 7. FEATURED ARTICLES (Section 17-18) */}
+      {/* 7. FEATURED ARTICLES */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-8">
           <div>
@@ -213,12 +225,12 @@ export default function HomePage() {
             href="/articles"
             className="text-xs font-bold text-emerald-600 dark:text-emerald-400 hover:underline flex items-center gap-1 self-start sm:self-auto"
           >
-            <span>Semua Artikel ({ARTICLES.length}) &rarr;</span>
+            <span>Semua Artikel ({allArticles.length}) &rarr;</span>
           </Link>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
-          {ARTICLES.slice(0, 4).map((art) => (
+          {allArticles.slice(0, 4).map((art) => (
             <Link
               key={art.slug}
               href={`/articles/${art.slug}`}
@@ -247,7 +259,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* 8. FREQUENTLY ASKED QUESTIONS (Section 19) */}
+      {/* 8. FAQS */}
       <section className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-10">
           <span className="text-xs uppercase tracking-wider text-emerald-500 font-bold block mb-1">
@@ -262,7 +274,7 @@ export default function HomePage() {
         </div>
 
         <div className="space-y-4">
-          {GENERAL_FAQS.map((faq, idx) => (
+          {faqs.map((faq, idx) => (
             <div
               key={idx}
               className="p-5 sm:p-6 rounded-2xl bg-white dark:bg-[#111827] border border-slate-200/80 dark:border-slate-800 shadow-sm space-y-2"
@@ -279,11 +291,10 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* BOTTOM ADVERTISEMENT (Section 30) */}
+      {/* BOTTOM ADVERTISEMENT */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <AdBanner slot="bottom" />
       </div>
-
     </div>
   );
 }

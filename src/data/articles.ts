@@ -371,6 +371,89 @@ Namun, untuk masalah logika yang sangat rumit—seperti mencari celah keamanan k
   - Tugas melibatkan manipulasi rumus matematika, aljabar, atau sains.
   - Logika bisnis memiliki puluhan aturan bersyarat yang saling terkait (*complex rule enforcement*).
     `
+  },
+  {
+    title: 'Cara Memilih Model OpenAI Sesuai Kebutuhan Aplikasi & Bisnis Anda',
+    slug: 'cara-memilih-model-openai-sesuai-kebutuhan',
+    excerpt: 'Panduan praktis langkah-demi-langkah memilih model OpenAI terbaik berdasarkan kompromi kecerdasan, kecepatan inferensi, modalitas, dan efisiensi anggaran API.',
+    category: 'Panduan Pemula',
+    tags: ['Panduan', 'Pemilihan Model', 'OpenAI API', 'o3-mini', 'GPT-4o'],
+    author: 'Tim Peneliti OpenAI Models Compare',
+    publishedAt: '2025-02-20',
+    updatedAt: '2025-02-22',
+    seoTitle: 'Cara Memilih Model OpenAI Sesuai Kebutuhan Aplikasi & Bisnis Anda',
+    seoDescription: 'Panduan praktis memilih model OpenAI terbaik: perbandingan kebutuhan chatbot, coding o3-mini, analisis dokumen GPT-4o, dan efisiensi biaya API.',
+    canonicalUrl: 'https://openai-models-compare.vercel.app/articles/cara-memilih-model-openai-sesuai-kebutuhan',
+    content: `
+## Mengapa Pemilihan Model yang Tepat Sangat Krusial?
+
+Dengan berkembangnya katalog model OpenAI dari seri GPT-4o, keluarga penalaran o-series (o1 dan o3-mini), hingga model spesialis embeddings dan multimodal, memilih model bukan lagi sekadar mencari "model nomor satu". Setiap model memiliki kompromi (*trade-off*) yang nyata antara biaya, latensi, dan kemampuan kognitif.
+
+---
+
+## Kerangka 4 Pertanyaan untuk Menentukan Pilihan:
+
+1. **Apakah tugas membutuhkan penalaran multi-langkah (STEM, coding mendalam, pembuktian matematika)?**
+   - **Ya:** Pilih **o3-mini** untuk kecepatan dan efisiensi tinggi, atau **o1** untuk masalah visual dan STEM tingkat doktoral.
+   - **Tidak:** Lanjut ke pertanyaan berikutnya.
+
+2. **Apakah aplikasi memerlukan interaksi teks dan gambar multimodal serbaguna?**
+   - Gunakan **GPT-4o** untuk pemahaman visual detail dan respon natural tingkat enterprise.
+   - Gunakan **GPT-4o mini** jika volume panggilan sangat tinggi dan anggaran menjadi prioritas utama.
+
+3. **Apakah Anda membangun pencarian semantik (RAG)?**
+   - Gunakan **text-embedding-3-small** untuk katalog dokumen umum dengan biaya ultra-murah ($0.02 / 1M token).
+   - Gunakan **text-embedding-3-large** jika akurasi pencarian kemiripan dokumen sangat kritis.
+
+4. **Apakah Anda memerlukan interaksi audio dua arah real-time?**
+   - Gunakan **gpt-4o-realtime-preview** melalui antarmuka WebSocket audio-ke-audio langsung.
+
+---
+
+## Matriks Rekomendasi Berdasarkan Use Case
+
+| Kebutuhan Aplikasi | Model yang Direkomendasikan | Alasan Utama |
+|---|---|---|
+| Customer Support Bot | **GPT-4o mini** | Kecepatan kilat, murah, kapasitas konteks 128k token |
+| Code Review & Refactoring | **o3-mini** | Unggul dalam penalaran syntax, skor SWE-bench tinggi |
+| Ekstraksi Faktur & Gambar | **GPT-4o** | Multimodal native, akurasi OCR dan penalaran spasial tinggi |
+| Transkripsi Suara Rapat | **whisper-1** | Multibahasa akurat dan toleran terhadap background noise |
+`
+  },
+  {
+    title: 'Cara Menghitung Biaya OpenAI API: Panduan Lengkap dan Kalkulator Token',
+    slug: 'cara-menghitung-biaya-openai-api-panduan-kalkulator',
+    excerpt: 'Pelajari rumus baku perhitungan tarif input token, output token, prompt caching diskon 50%, dan Batch API untuk menghemat anggaran operasional AI hingga 80%.',
+    category: 'Biaya & Kalkulator',
+    tags: ['Biaya API', 'Kalkulator Token', 'Pricing OpenAI', 'Hemat Biaya'],
+    author: 'Tim Peneliti OpenAI Models Compare',
+    publishedAt: '2025-02-21',
+    updatedAt: '2025-02-23',
+    seoTitle: 'Cara Menghitung Biaya OpenAI API: Panduan Lengkap dan Kalkulator Token',
+    seoDescription: 'Pelajari rumus baku perhitungan tarif token OpenAI, diskon prompt caching, Batch API, dan simulasi biaya per bulan menggunakan kalkulator resmi.',
+    canonicalUrl: 'https://openai-models-compare.vercel.app/articles/cara-menghitung-biaya-openai-api-panduan-kalkulator',
+    content: `
+## Rumus Baku Perhitungan Biaya OpenAI API
+
+OpenAI menagih penggunaan API berdasarkan jumlah **token** yang diproses, bukan berdasarkan jumlah kata atau waktu koneksi server.
+
+Secara matematis, formula total biaya per permintaan dihitung sebagai berikut:
+
+$$\\text{Total Biaya} = \\left(\\frac{\\text{Input Token}}{1.000.000} \\times \\text{Harga Input}\\right) + \\left(\\frac{\\text{Cached Input Token}}{1.000.000} \\times \\text{Harga Cached Input}\\right) + \\left(\\frac{\\text{Output Token}}{1.000.000} \\times \\text{Harga Output}\\right)$$
+
+---
+
+## Strategi Menghemat Biaya Hingga 80%
+
+1. **Manfaatkan Prompt Caching Otomatis:**
+   Untuk prompt yang panjangnya di atas 1.024 token dan sering digunakan berulang kali (misalnya system instructions atau dokumen referensi), OpenAI memberikan potongan harga 50% secara otomatis pada bagian prompt yang terkena cache.
+
+2. **Gunakan Batch API untuk Pekerjaan Non-Realtime:**
+   Jika tugas Anda dapat diselesaikan dalam kurun waktu 24 jam (misalnya ekstraksi data malam hari, klasifikasi konten harian), Batch API memberikan diskon langsung **50% untuk input dan output**.
+
+3. **Gunakan Model Hirarkis (Model Routing):**
+   Gunakan **GPT-4o mini** untuk menyortir intent dan menjawab pertanyaan mudah, lalu teruskan pertanyaan matematika atau coding yang rumit ke **o3-mini** atau **o1**.
+`
   }
 ];
 

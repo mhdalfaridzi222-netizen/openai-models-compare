@@ -1,16 +1,14 @@
-export type ModelStatus = 'ACTIVE' | 'PREVIEW' | 'DEPRECATED' | 'RETIRED' | 'UNKNOWN';
+export * from './database';
 
-export type ModelCategory =
-  | 'flagship'
-  | 'reasoning'
-  | 'coding'
-  | 'image'
-  | 'audio'
-  | 'realtime'
-  | 'embeddings'
-  | 'moderation'
-  | 'open-weight'
-  | 'deprecated';
+import {
+  ModelStatus,
+  ModelCategory,
+  CapabilityValue,
+  ModelCapabilityRecord,
+  ModelPriceRecord,
+  ModelSourceRecord,
+  ModelEntity
+} from './database';
 
 export interface Model {
   id: string;
@@ -27,6 +25,8 @@ export interface Model {
   inputPrice: number | null; // USD per 1M tokens
   cachedInputPrice: number | null; // USD per 1M tokens
   outputPrice: number | null; // USD per 1M tokens
+  batchInputPrice?: number | null;
+  batchOutputPrice?: number | null;
   knowledgeCutoff: string;
   imageInput: boolean;
   imageGeneration: boolean;
@@ -43,7 +43,13 @@ export interface Model {
   deprecatedDate: string | null;
   shutdownDate: string | null;
   officialUrl: string;
+  documentationUrl?: string;
   lastUpdated: string;
+  lastVerifiedAt?: string;
+  lastSyncedAt?: string | null;
+  isPossiblyMissing?: boolean;
+  isFeatured?: boolean;
+  isPublic?: boolean;
   suitableFor: string[];
   notSuitableFor: string[];
   recommendedReplacement: string | null;
@@ -53,6 +59,10 @@ export interface Model {
     mathAime?: number | null;
     gpqaDiamond?: number | null;
   };
+  // Detailed V2 capabilities & sources
+  capabilitiesRecord?: ModelCapabilityRecord;
+  sourcesList?: ModelSourceRecord[];
+  priceRecord?: ModelPriceRecord | null;
 }
 
 export interface CategoryInfo {
@@ -66,10 +76,11 @@ export interface CategoryInfo {
 }
 
 export interface Article {
+  id?: string;
   title: string;
   slug: string;
   excerpt: string;
-  content: string; // Markdown / HTML formatted text
+  content: string;
   featuredImage?: string;
   category: string;
   tags: string[];
@@ -79,10 +90,15 @@ export interface Article {
   seoTitle: string;
   seoDescription: string;
   canonicalUrl: string;
+  status?: 'DRAFT' | 'PUBLISHED' | 'ARCHIVED';
+  relatedModelIds?: string[];
 }
 
 export interface FAQItem {
+  id?: string;
   q: string;
   a: string;
   category?: string;
+  sortOrder?: number;
+  isPublished?: boolean;
 }

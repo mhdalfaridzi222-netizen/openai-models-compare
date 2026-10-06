@@ -1,9 +1,9 @@
 import { notFound } from 'next/navigation';
 import type { Metadata } from 'next';
 import Link from 'next/link';
-import { ARTICLES } from '@/data/articles';
+import { getArticleBySlug, getAllArticles, getAllModels } from '@/lib/db';
 import AdBanner from '@/components/AdBanner';
-import { Calendar, User, ArrowLeft, ArrowRight, Tag, Share2, Sparkles } from 'lucide-react';
+import { Calendar, User, ArrowLeft, ArrowRight, Tag, Share2, Sparkles, Cpu } from 'lucide-react';
 import { siteConfig } from '@/config/site';
 
 interface Props {
@@ -11,12 +11,13 @@ interface Props {
 }
 
 export async function generateStaticParams() {
-  return ARTICLES.map((a) => ({ slug: a.slug }));
+  const articles = await getAllArticles();
+  return articles.map((a) => ({ slug: a.slug }));
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
-  const article = ARTICLES.find((a) => a.slug === slug);
+  const article = await getArticleBySlug(slug);
 
   if (!article) return { title: 'Artikel Tidak Ditemukan' };
 
@@ -35,15 +36,33 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function ArticleDetailPage({ params }: Props) {
   const { slug } = await params;
-  const article = ARTICLES.find((a) => a.slug === slug);
+  const [article, allArticles, allModels] = await Promise.all([
+    getArticleBySlug(slug),
+    getAllArticles(),
+    getAllModels()
+  ]);
 
   if (!article) {
     notFound();
   }
 
-  const relatedArticles = ARTICLES.filter((a) => a.slug !== article.slug).slice(0, 2);
+  const relatedArticles = allArticles.filter((a) => a.slug !== article.slug).slice(0, 2);
 
-  // Schema.org JSON-LD (Section 28)
+  // Section 45: Related Models for this article
+  let relatedModels = allModels.slice(0, 3);
+  if (article.slug.includes('coding')) {
+    relatedModels = allModels.filter(m => m.category === 'coding' || m.modelId === 'o3-mini' || m.modelId === 'o1').slice(0, 3);
+  } else if (article.slug.includes('gambar') || article.slug.includes('image')) {
+    relatedModels = allModels.filter(m => m.category === 'image' || m.imageGeneration || m.imageInput).slice(0, 3);
+  } else if (article.slug.includes('audio') || article.slug.includes('realtime')) {
+    relatedModels = allModels.filter(m => m.category === 'audio' || m.category === 'realtime').slice(0, 3);
+  } else if (article.slug.includes('reasoning')) {
+    relatedModels = allModels.filter(m => m.category === 'reasoning' || m.reasoning).slice(0, 3);
+  } else {
+    relatedModels = allModels.filter(m => ['gpt-4o', 'gpt-4o-mini', 'o3-mini'].includes(m.id)).slice(0, 3);
+  }
+
+  // Schema.org JSON-LD (Section 50)
   const jsonLd = {
     '@context': 'https://schema.org',
     '@type': 'Article',
@@ -62,12 +81,10 @@ export default async function ArticleDetailPage({ params }: Props) {
     },
   };
 
-  // Split content into clean paragraphs and headers
   const contentBlocks = article.content.split('\n\n');
 
   return (
     <article className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-16 space-y-10">
-      
       {/* Schema.org Structured Data */}
       <script
         type="application/ld+json"
@@ -119,7 +136,6 @@ export default async function ArticleDetailPage({ params }: Props) {
       {/* Article Body */}
       <div className="bg-white dark:bg-[#111827] p-6 sm:p-10 rounded-3xl border border-slate-200/80 dark:border-slate-800 shadow-sm space-y-6 text-sm text-slate-700 dark:text-slate-300 leading-relaxed">
         {contentBlocks.map((block, idx) => {
-          // If block starts with # or ## or ###
           if (block.startsWith('### ')) {
             return (
               <h3 key={idx} className="text-base font-bold text-slate-900 dark:text-white pt-4">
@@ -145,7 +161,6 @@ export default async function ArticleDetailPage({ params }: Props) {
             );
           }
 
-          // Insert an article ad after the 2nd paragraph
           return (
             <div key={idx} className="space-y-4">
               <p>{block}</p>
@@ -172,6 +187,42 @@ export default async function ArticleDetailPage({ params }: Props) {
           ))}
         </div>
       </div>
+
+      {/* SECTION 45: RELATED MODELS IN ARTICLE */}
+      {relatedModels.length > 0 && (
+        <div className="space-y-4">
+          <div className="flex items-center gap-2">
+            <Cpu className="w-4 h-4 text-emerald-500" />
+            <h3 className="text-lg font-bold text-slate-900 dark:text-white">
+              Model Terkait Pembahasan Ini
+            </h3>
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            {relatedModels.map((m) => (
+              <Link
+                key={m.id}
+                href={`/models/${m.slug}`}
+                className="p-4 rounded-2xl bg-white dark:bg-[#111827] border border-slate-200 dark:border-slate-800 hover:border-emerald-500/50 transition-all flex flex-col justify-between space-y-2 group"
+              >
+                <div>
+                  <div className="flex items-center justify-between">
+                    <span className="font-extrabold text-sm text-slate-900 dark:text-white group-hover:text-emerald-500 transition-colors">
+                      {m.name}
+                    </span>
+                    <span className="text-[10px] font-mono text-slate-400">{m.modelId}</span>
+                  </div>
+                  <p className="text-[11px] text-slate-500 dark:text-slate-400 line-clamp-2 mt-1">
+                    {m.shortDescription}
+                  </p>
+                </div>
+                <span className="text-xs font-bold text-emerald-500 flex items-center gap-1 self-start">
+                  <span>Lihat Spesifikasi &rarr;</span>
+                </span>
+              </Link>
+            ))}
+          </div>
+        </div>
+      )}
 
       {/* Related Articles */}
       <div className="space-y-4">
@@ -203,7 +254,6 @@ export default async function ArticleDetailPage({ params }: Props) {
       </div>
 
       <AdBanner slot="bottom" />
-
     </article>
   );
 }

@@ -1,23 +1,21 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
-import { getModelsByStatus } from '@/data/models';
+import { getAllModels } from '@/lib/db';
 import ModelStatusBadge from '@/components/ModelStatusBadge';
 import AdBanner from '@/components/AdBanner';
-import { History, ArrowRight, AlertTriangle, ShieldAlert } from 'lucide-react';
+import { History, ArrowRight, AlertTriangle, ExternalLink } from 'lucide-react';
 
 export const metadata: Metadata = {
   title: 'Basis Data Historis Model OpenAI Deprecated & Retired',
   description: 'Daftar resmi model-model OpenAI lama yang sudah tidak direkomendasikan (deprecated) atau telah dimatikan secara permanen (shutdown/retired) beserta model penggantinya.',
 };
 
-export default function DeprecatedModelsPage() {
-  const deprecatedModels = getModelsByStatus('DEPRECATED');
-  const retiredModels = getModelsByStatus('RETIRED');
-  const allHistorical = [...deprecatedModels, ...retiredModels];
+export default async function DeprecatedModelsPage() {
+  const allModels = await getAllModels({ includePrivate: true });
+  const allHistorical = allModels.filter(m => m.status === 'DEPRECATED' || m.status === 'RETIRED');
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-16 space-y-10">
-      
       {/* Header */}
       <div className="text-center max-w-3xl mx-auto space-y-3">
         <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-orange-500/10 text-orange-600 dark:text-orange-400 text-xs font-bold border border-orange-500/20">
@@ -28,11 +26,10 @@ export default function DeprecatedModelsPage() {
           Model Deprecated & Retired OpenAI
         </h1>
         <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-300 leading-relaxed">
-          Pangkalan data historis model-model lama yang sudah usang atau telah dinonaktifkan permanen, lengkap dengan tanggal penghentian dan rekomendasi model pengganti.
+          Pangkalan data historis model-model lama yang sudah usang atau telah dinonaktifkan permanen, lengkap dengan tanggal penghentian dan rekomendasi model pengganti resmi.
         </p>
       </div>
 
-      {/* Top Advertisement */}
       <AdBanner slot="top" />
 
       {/* Warning Notice Box */}
@@ -57,13 +54,13 @@ export default function DeprecatedModelsPage() {
                 <th className="py-4 px-4 text-center">Status</th>
                 <th className="py-4 px-4">Tanggal Deprecated</th>
                 <th className="py-4 px-4">Tanggal Shutdown</th>
+                <th className="py-4 px-4">Sumber Resmi</th>
                 <th className="py-4 px-6 text-right">Pengganti Direkomendasikan</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100 dark:divide-slate-800 text-slate-700 dark:text-slate-300 font-medium">
               {allHistorical.map((m) => (
                 <tr key={m.id} className="hover:bg-slate-50/50 dark:hover:bg-[#161f30]/40 transition-colors">
-                  
                   {/* Name & link */}
                   <td className="py-4 px-6">
                     <Link href={`/models/${m.slug}`} className="font-bold text-slate-900 dark:text-white hover:text-emerald-500 transition-colors">
@@ -96,6 +93,19 @@ export default function DeprecatedModelsPage() {
                     )}
                   </td>
 
+                  {/* Official Source */}
+                  <td className="py-4 px-4">
+                    <a
+                      href={m.officialUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-emerald-500 hover:underline flex items-center gap-1 font-semibold"
+                    >
+                      <span>Dokumentasi</span>
+                      <ExternalLink className="w-3 h-3" />
+                    </a>
+                  </td>
+
                   {/* Recommended Replacement */}
                   <td className="py-4 px-6 text-right">
                     {m.recommendedReplacement ? (
@@ -107,10 +117,9 @@ export default function DeprecatedModelsPage() {
                         <ArrowRight className="w-3 h-3" />
                       </Link>
                     ) : (
-                      <span className="text-slate-400 text-xs">-</span>
+                      <span className="text-slate-400 text-xs">Belum ditentukan.</span>
                     )}
                   </td>
-
                 </tr>
               ))}
             </tbody>
@@ -118,9 +127,7 @@ export default function DeprecatedModelsPage() {
         </div>
       </div>
 
-      {/* Bottom Advertisement */}
       <AdBanner slot="bottom" />
-
     </div>
   );
 }
